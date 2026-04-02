@@ -1,0 +1,71 @@
+---
+const tags = [
+  "all",
+  "astro",
+  "cli",
+  "colors",
+  "css",
+  "design",
+  "development",
+  "framework",
+  "graphics",
+  "letters",
+  "library",
+  "NPM",
+  "productivity",
+  "svg",
+  "tailwind",
+  "type",
+  "typography",
+  "uiux",
+  "variables",
+  "wallpapers",
+];
+---
+
+<div class="border-b border-base-100 overflow-x-auto scrollbar-hide">
+  <div class="px-6 max-w-6xl mx-auto">
+    <div class="flex items-center gap-1 py-3 w-max">
+      {
+        tags.map((tag, i) => (
+          <button
+            data-tag={tag}
+            class:list={[
+              "tag-btn text-xs px-3 py-1.5 rounded-full border transition-colors duration-150 whitespace-nowrap",
+              i === 0
+                ? "bg-base-900 text-white border-base-900"
+                : "bg-white text-base-500 border-base-200 hover:border-base-400 hover:text-base-900",
+            ]}
+          >
+            {tag}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll(".tag-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tag-btn").forEach((b) => {
+        b.classList.remove("bg-base-900", "text-white", "border-base-900");
+        b.classList.add(
+          "bg-white",
+          "text-base-500",
+          "border-base-200",
+          "hover:border-base-400",
+          "hover:text-base-900"
+        );
+      });
+      btn.classList.add("bg-base-900", "text-white", "border-base-900");
+      btn.classList.remove(
+        "bg-white",
+        "text-base-500",
+        "border-base-200",
+        "hover:border-base-400",
+        "hover:text-base-900"
+      );
+    });
+  });
+</script>

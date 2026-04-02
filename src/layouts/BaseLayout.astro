@@ -2,17 +2,27 @@
 import BaseHead from "@/components/BaseHead.astro";
 import Navigation from "@/components/global/Navigation.astro";
 import Footer from "@/components/global/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Supreme Court Observer",
+  description = "Independent reporting, analysis, and data on the Supreme Court of India.",
+} = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead />
+    <BaseHead title={title} description={description} />
   </head>
-  <body
-    class="bg-base-50 flex flex-col min-h-svh mx-auto 2xl:max-w-screen-xl relative"
-  >
+  <body class="bg-white text-[#1a1a1a] font-sans min-h-screen flex flex-col">
     <Navigation />
-    <main class="grow"><slot /></main>
+    <main class="flex-1">
+      <slot />
+    </main>
     <Footer />
   </body>
 </html>

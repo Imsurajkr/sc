@@ -1,32 +1,38 @@
 ---
-import BigLogo from "@/components/assets/BigLogo.astro";
 ---
 
-<section class="overflow-hidden relative">
-  <BigLogo class="lg:-mx-4 opacity-4 absolute inset-0" />
-  <div class="py-12 max-w-xl mx-auto px-8 relative">
-    <div>
-      <span
-        class="inline-flex items-center justify-center gap-2 rounded-full px-3 h-7.5 text-xs text-base-900 bg-white ring-inset"
-      >
-        <p>1 Spots available</p>
-        <div class="size-2 rounded-full bg-black border-2 border-black"></div>
-        <div class="size-2 rounded-full border-black border-2"></div>
-      </span>
-      <h1 class="text-4xl mt-12 tracking-tight text-base-900 text-balance font-medium">
-        Hello! I’m <strong>Your Name</strong>
+<section class="border-b border-base-100" id="overview">
+  <div class="px-6 py-16 max-w-6xl mx-auto">
+    <div class="max-w-2xl">
+      <h1 class="text-3xl lg:text-4xl font-semibold tracking-tight text-base-900 text-balance leading-tight">
+        No concepts.<br />Just real websites.
       </h1>
-    </div>
-    <div
-      class="grid grid-cols-1 text-base text-base-600 lg:grid-cols-2 max-w-xl gap-2 group h-full mt-12"
-    >
-      <p>
-        🧑‍💻 Front‑end Engineer • 📚 Tech Writer • 🌍 Explorer
+      <p class="mt-4 text-sm text-base-500 max-w-lg text-balance leading-relaxed">
+        A curated collection of production websites worth studying — layout,
+        hierarchy, interaction, and execution.
       </p>
     </div>
-    <p class="text-sm italic text-base-600 mt-8">
-      Embrace flexibility, halt or terminate your subscription whenever you
-      need. <span class="block text-base-900">⏤ No questions asked.</span>
-    </p>
+    <div class="mt-8 flex items-center gap-2 max-w-sm">
+      <div class="relative flex-1">
+        <svg
+          class="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-base-400"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"
+          />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search sites... ⌘K"
+          class="w-full pl-9 pr-4 h-9 text-xs bg-base-50 border border-base-200 rounded-full text-base-900 placeholder:text-base-400 focus:outline-none focus:ring-2 focus:ring-base-900 focus:border-transparent"
+        />
+      </div>
+    </div>
   </div>
 </section>

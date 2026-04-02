@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Badge from '@/components/ui/Badge.astro';
+
+interface Props {
+  judge: CollectionEntry<'judges'>;
+}
+
+const { judge } = Astro.props;
+const { name, designation, status, appointedDate, retirementDate, pendingCases, judgments, initials } = judge.data;
+const slug = judge.id.replace(/\.json$/, '');
+
+const statusVariant = status === 'sitting' ? 'green' : 'gray';
+const statusLabel = status === 'sitting' ? 'Sitting' : 'Retired';
+
+const bgColors = ['bg-violet-600', 'bg-indigo-600', 'bg-blue-600', 'bg-teal-600', 'bg-emerald-600'];
+const colorIndex = name.charCodeAt(0) % bgColors.length;
+const avatarBg = bgColors[colorIndex];
+
+const termDisplay = retirementDate
+  ? `${appointedDate} – ${retirementDate}`
+  : `Since ${appointedDate}`;
+---
+
+<article class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow duration-200 flex flex-col gap-4">
+  <div class="flex items-start gap-4">
+    <div class={`${avatarBg} rounded-full w-14 h-14 flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}>
+      {initials}
+    </div>
+    <div class="min-w-0">
+      <h3 class="font-semibold text-[#1a1a1a] text-base leading-tight hover:text-[#7a00df] transition-colors">
+        <a href={`/judges/${slug}/`}>{name}</a>
+      </h3>
+      <p class="text-xs text-[#666666] mt-0.5 leading-snug">{designation}</p>
+      <div class="mt-1.5">
+        <Badge label={statusLabel} variant={statusVariant} />
+      </div>
+    </div>
+  </div>
+
+  <div class="text-xs text-[#666666] space-y-1 border-t border-gray-100 pt-3">
+    <div class="flex justify-between">
+      <span>Term</span>
+      <span class="text-[#1a1a1a] font-medium text-right max-w-[60%]">{termDisplay}</span>
+    </div>
+    <div class="flex justify-between">
+      <span>Judgments</span>
+      <span class="text-[#1a1a1a] font-medium">{judgments}</span>
+    </div>
+    {status === 'sitting' && (
+      <div class="flex justify-between">
+        <span>Pending Cases</span>
+        <span class="text-[#1a1a1a] font-medium">{pendingCases}</span>
+      </div>
+    )}
+  </div>
+</article>

@@ -1,0 +1,137 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Badge from "@/components/ui/Badge.astro";
+import CaseCard from "@/components/cards/CaseCard.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const judges = await getCollection("judges");
+  return judges.map((judge) => ({
+    params: { slug: judge.id.replace(/\.json$/, '') },
+    props: { judge },
+  }));
+}
+
+const { judge } = Astro.props;
+const { name, designation, status, appointedDate, retirementDate, pendingCases, judgments, bio, initials } = judge.data;
+const judgeSlug = judge.id.replace(/\.json$/, '');
+
+const statusVariant = status === "sitting" ? "green" : "gray";
+const statusLabel = status === "sitting" ? "Sitting" : "Retired";
+
+const bgColors = ['bg-violet-600', 'bg-indigo-600', 'bg-blue-600', 'bg-teal-600', 'bg-emerald-600'];
+const colorIndex = name.charCodeAt(0) % bgColors.length;
+const avatarBg = bgColors[colorIndex];
+
+const termDisplay = retirementDate
+  ? `${appointedDate} – ${retirementDate}`
+  : `Since ${appointedDate}`;
+
+// Cases where this judge is on the bench
+const allCases = await getCollection("cases");
+const judgeFirstName = name.replace(/^Justice\s+/, '').split(' ')[0];
+const judgeLastName = name.replace(/^Justice\s+/, '').split(' ').pop() || '';
+
+const judgeCases = allCases.filter((c) =>
+  c.data.bench.some((b) =>
+    b.includes(judgeFirstName) || b.includes(judgeLastName)
+  )
+).slice(0, 6);
+---
+
+<BaseLayout title={`${name} — Judges — SCO`} description={bio}>
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-[#666666] mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-[#7a00df]">Home</a>
+      <span>/</span>
+      <a href="/judges/" class="hover:text-[#7a00df]">Judges</a>
+      <span>/</span>
+      <span class="text-[#1a1a1a]">{name}</span>
+    </nav>
+
+    <!-- Judge header -->
+    <div class="flex flex-col sm:flex-row gap-6 items-start mb-10 pb-10 border-b border-gray-200">
+      <div class={`${avatarBg} rounded-2xl w-24 h-24 flex items-center justify-center text-white font-bold text-3xl flex-shrink-0`}>
+        {initials}
+      </div>
+      <div class="flex-1">
+        <div class="mb-2">
+          <Badge label={statusLabel} variant={statusVariant} />
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-[#1a1a1a] mb-1">{name}</h1>
+        <p class="text-[#666666] mb-3">{designation}</p>
+        <p class="text-sm text-[#666666]">{termDisplay}</p>
+        <div class="flex gap-6 mt-4">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-[#1a1a1a]">{judgments}</div>
+            <div class="text-xs text-[#666666]">Judgments</div>
+          </div>
+          {status === 'sitting' && (
+            <div class="text-center">
+              <div class="text-2xl font-bold text-[#1a1a1a]">{pendingCases}</div>
+              <div class="text-xs text-[#666666]">Pending Cases</div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- Bio -->
+      <div class="lg:col-span-2">
+        <h2 class="text-lg font-semibold text-[#1a1a1a] mb-4">Biography</h2>
+        <p class="text-[#333333] leading-relaxed">{bio}</p>
+
+        <!-- Cases by this judge -->
+        {judgeCases.length > 0 && (
+          <div class="mt-10">
+            <h2 class="text-lg font-semibold text-[#1a1a1a] mb-4">Cases on Bench</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {judgeCases.map((c) => (
+                <CaseCard case={c} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Sidebar -->
+      <aside>
+        <div class="bg-white border border-gray-200 rounded-lg p-5 sticky top-20">
+          <h3 class="text-sm font-semibold text-[#1a1a1a] mb-4">Profile</h3>
+          <dl class="space-y-3 text-sm">
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Status</dt>
+              <dd class="mt-1"><Badge label={statusLabel} variant={statusVariant} /></dd>
+            </div>
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Designation</dt>
+              <dd class="mt-1 text-[#1a1a1a]">{designation}</dd>
+            </div>
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Appointed</dt>
+              <dd class="mt-1 text-[#1a1a1a]">{appointedDate}</dd>
+            </div>
+            {retirementDate && (
+              <div>
+                <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Retired</dt>
+                <dd class="mt-1 text-[#1a1a1a]">{retirementDate}</dd>
+              </div>
+            )}
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Judgments</dt>
+              <dd class="mt-1 text-[#1a1a1a] font-semibold">{judgments}</dd>
+            </div>
+            {status === 'sitting' && (
+              <div>
+                <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Pending Cases</dt>
+                <dd class="mt-1 text-[#1a1a1a] font-semibold">{pendingCases}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

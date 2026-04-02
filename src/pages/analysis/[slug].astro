@@ -1,0 +1,51 @@
+---
+import ArticleLayout from "@/layouts/ArticleLayout.astro";
+import ArticleCard from "@/components/cards/ArticleCard.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+const { title, category, author, date, excerpt, tags } = article.data;
+
+const { Content } = await article.render();
+
+// Related articles (same category, excluding current)
+const allArticles = await getCollection("articles");
+const relatedArticles = allArticles
+  .filter(
+    (a) =>
+      a.slug !== article.slug &&
+      (a.data.category === category || a.data.tags.some((t) => tags.includes(t)))
+  )
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3);
+---
+
+<ArticleLayout
+  title={title}
+  description={excerpt}
+  category={category}
+  author={author}
+  date={date}
+  tags={tags}
+>
+  <Content />
+
+  {relatedArticles.length > 0 && (
+    <div class="mt-16 pt-10 border-t border-gray-200 not-prose">
+      <h2 class="text-xl font-bold text-[#1a1a1a] mb-6">Related Articles</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {relatedArticles.map((a) => (
+          <ArticleCard article={a} variant="featured" />
+        ))}
+      </div>
+    </div>
+  )}
+</ArticleLayout>

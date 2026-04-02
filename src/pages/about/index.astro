@@ -1,0 +1,129 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const values = [
+  {
+    title: "Value-Driven",
+    description: "We are guided by constitutional values of justice, equality, and liberty. Our coverage is shaped by a commitment to human rights and the rule of law.",
+    icon: "⚖️",
+  },
+  {
+    title: "Accessible",
+    description: "We believe legal journalism should not be locked behind jargon. We write for informed citizens, not just lawyers, making complex legal processes understandable.",
+    icon: "🔓",
+  },
+  {
+    title: "Succinct",
+    description: "We respect our readers' time. Our reports and analyses are carefully edited to be as brief as the subject matter permits — no filler, no padding.",
+    icon: "✂️",
+  },
+  {
+    title: "Sharp Analysis",
+    description: "We go beyond summarising judgments. Our team provides context, critique, and independent analysis that helps readers understand the full implications of court decisions.",
+    icon: "🔬",
+  },
+  {
+    title: "Deep Domain Expertise",
+    description: "Our team combines legal training, journalistic experience, and data skills. We know the law well enough to see when it is being applied incorrectly or inconsistently.",
+    icon: "📚",
+  },
+  {
+    title: "Non-Partisan",
+    description: "We hold no brief for any political party or ideological tendency. We evaluate court decisions by constitutional standards, not political convenience.",
+    icon: "🌐",
+  },
+];
+
+const team = [
+  { name: "V. Venkatesan", role: "Senior Editor & Legal Correspondent" },
+  { name: "Advay Vora", role: "Constitutional Law Analyst" },
+  { name: "Namrata Banerjee", role: "Court Data & Research" },
+  { name: "Priya Menon", role: "Managing Editor" },
+];
+---
+
+<BaseLayout
+  title="About — Supreme Court Observer"
+  description="About the Supreme Court Observer — our mission, values, and team."
+>
+  <!-- Hero -->
+  <div class="bg-gradient-to-br from-[#7a00df] to-[#3d0075] text-white py-20">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <div class="text-5xl font-bold mb-3">SCO</div>
+      <p class="text-xl text-purple-200 max-w-2xl mx-auto">
+        The Supreme Court Observer is India's leading platform for independent reporting, analysis, and data on the Supreme Court.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-4 py-16">
+    <!-- Mission -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a1a1a] mb-4">Our Mission</h2>
+      <div class="prose prose-lg max-w-none prose-p:text-[#333333] prose-p:leading-relaxed">
+        <p>
+          The Supreme Court of India is among the most powerful courts in the world. Its decisions shape the lives of 1.4 billion people — on matters ranging from electoral law to civil liberties, from environmental regulation to economic policy. Yet its proceedings remain largely opaque to the public, reported in dry legalese that few can decipher.
+        </p>
+        <p>
+          The Supreme Court Observer was founded to bridge this gap. We believe that an engaged, informed citizenry is essential to a functioning democracy — and that citizens cannot engage with institutions they cannot understand. We exist to make the Supreme Court's work legible, to surface its patterns and problems, and to hold it accountable through the power of independent journalism.
+        </p>
+        <p>
+          We cover hearings, judgments, orders, and data. We report on who sits on which bench, who argues which case, and what gets decided and when. We contextualise legal developments within the broader constitutional framework. And we do all of this without fear or favour.
+        </p>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a1a1a] mb-8">Our Values</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {values.map((value) => (
+          <div class="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+            <div class="text-3xl mb-3">{value.icon}</div>
+            <h3 class="font-semibold text-[#1a1a1a] mb-2">{value.title}</h3>
+            <p class="text-sm text-[#666666] leading-relaxed">{value.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#1a1a1a] mb-8">Our Team</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {team.map((member, i) => {
+          const colors = ['bg-violet-600', 'bg-indigo-600', 'bg-blue-600', 'bg-teal-600'];
+          const initials = member.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+          return (
+            <div class="text-center">
+              <div class={`${colors[i % colors.length]} w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-3`}>
+                {initials}
+              </div>
+              <h3 class="font-semibold text-[#1a1a1a] text-sm">{member.name}</h3>
+              <p class="text-xs text-[#666666] mt-1">{member.role}</p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section>
+      <h2 class="text-2xl font-bold text-[#1a1a1a] mb-6">Contact Us</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-[#f5e6ff] rounded-lg p-6">
+          <h3 class="font-semibold text-[#1a1a1a] mb-2">Bengaluru Office</h3>
+          <p class="text-sm text-[#666666]">No. 47, Residency Road<br />Bengaluru 560 025<br />Karnataka</p>
+        </div>
+        <div class="bg-[#f5e6ff] rounded-lg p-6">
+          <h3 class="font-semibold text-[#1a1a1a] mb-2">New Delhi Office</h3>
+          <p class="text-sm text-[#666666]">B-12, Nizamuddin East<br />New Delhi 110 013<br />Delhi</p>
+        </div>
+      </div>
+      <p class="mt-6 text-sm text-[#666666]">
+        For editorial enquiries: <a href="mailto:editorial@testing.in" class="text-[#7a00df] hover:underline">editorial@testing.in</a><br />
+        For subscriptions: <a href="mailto:subscribe@testing.in" class="text-[#7a00df] hover:underline">subscribe@testing.in</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>

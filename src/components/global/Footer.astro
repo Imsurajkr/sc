@@ -1,71 +1,71 @@
 ---
-const footerLinks = [
-  {
-    title: "Navigation",
-    links: [
-      { label: "Work", href: "#work" },
-      { label: "How it works", href: "#how" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      {
-        label: "Lexington Themes.",
-        href: "https://www.lexingtonthemes.com",
-      },
-      {
-        label: "Oxbow UI",
-        href: "https://www.oxbowui.com",
-      },
-    ],
-  },
-
-  {
-    title: "Socials",
-    links: [
-      {
-        label: "@Mike_Andreuzza",
-        href: "https://twitter.com/Mike_Andreuzza",
-      },
-    ],
-  },
-];
 ---
 
-<footer class="overflow-hidden">
-  <div class="px-8 pt-12 pb-24 max-w-xl mx-auto">
-    <div class="grid grid-cols-2 lg:grid-cols-3">
-      {
-        footerLinks.map((section) => (
-          <div>
-            <h3 class="text-base-900 text-sm">{section.title}</h3>
-            <ul
-              role="list"
-              class="mt-2 text-xs flex flex-col gap-1 text-base-600"
-            >
-              {section.links.map((link) => (
-                <li>
-                  <a href={link.href} class="hover:text-base-900">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))
-      }
-    </div>
-    <div class="mt-12">
-      <div class="text-sm text-base-900">
-        © 2025 MicroStudio. All rights reserved.
-      </div>
-      <p class="text-xs text-base-600 mt-1 text-balance">
-        MicroStudio is not affiliated with Stripe, Breeew, Astro, or Tailwind
-        Labs, nor is it endorsed or sponsored by them.
+<footer class="bg-[#1a1a1a] text-gray-400 mt-16">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <!-- Top: Logo + tagline -->
+    <div class="mb-10">
+      <a href="/" class="text-2xl font-bold text-white tracking-tight">SCO</a>
+      <p class="text-sm text-gray-400 mt-1 max-w-sm">
+        Independent reporting, analysis, and data on the Supreme Court of India.
       </p>
+    </div>
+
+    <!-- 4-column grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-gray-700">
+      <!-- About -->
+      <div>
+        <h4 class="text-white text-sm font-semibold mb-3">About</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/about/" class="hover:text-white transition-colors">About Us</a></li>
+          <li><a href="/about/" class="hover:text-white transition-colors">About Supreme Court</a></li>
+          <li><a href="/about/" class="hover:text-white transition-colors">Team</a></li>
+          <li><a href="/about/" class="hover:text-white transition-colors">Careers</a></li>
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div>
+        <h4 class="text-white text-sm font-semibold mb-3">Connect</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition-colors">Twitter / X</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">YouTube</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">LinkedIn</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Instagram</a></li>
+          <li><a href="mailto:contact@testing.in" class="hover:text-white transition-colors">Email</a></li>
+        </ul>
+      </div>
+
+      <!-- Explore -->
+      <div>
+        <h4 class="text-white text-sm font-semibold mb-3">Explore</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/cases/" class="hover:text-white transition-colors">Cases</a></li>
+          <li><a href="/judges/" class="hover:text-white transition-colors">Judges</a></li>
+          <li><a href="/analysis/" class="hover:text-white transition-colors">Analysis</a></li>
+          <li><a href="/glossary/" class="hover:text-white transition-colors">Glossary</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h4 class="text-white text-sm font-semibold mb-3">Legal</h4>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="pt-6 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs text-gray-500">
+      <div>
+        <p>&copy; 2026 Legal Observer Trust. All rights reserved.</p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 sm:gap-6">
+        <span>Bengaluru: No. 47, Residency Road, Bengaluru 560 025</span>
+        <span>New Delhi: B-12, Nizamuddin East, New Delhi 110 013</span>
+      </div>
     </div>
   </div>
 </footer>

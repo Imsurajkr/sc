@@ -1,0 +1,125 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import CaseCard from "@/components/cards/CaseCard.astro";
+import PageHeader from "@/components/ui/PageHeader.astro";
+import { getCollection } from "astro:content";
+
+const allCases = await getCollection("cases");
+
+// Sort by filedDate desc
+const sortedCases = allCases.sort(
+  (a, b) => new Date(b.data.filedDate).getTime() - new Date(a.data.filedDate).getTime()
+);
+---
+
+<BaseLayout
+  title="Cases — Supreme Court Observer"
+  description="Browse all Supreme Court cases tracked by SCO."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <PageHeader
+      title={`Cases (${allCases.length})`}
+      description="All Supreme Court cases tracked by the Supreme Court Observer, with status updates and analysis."
+    />
+
+    <!-- Filter bar -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-8">
+      <!-- Status filter pills -->
+      <div class="flex items-center gap-2" id="status-filter">
+        <button
+          data-filter="all"
+          class="filter-btn active text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-[#7a00df] text-white border-[#7a00df]"
+        >
+          All
+        </button>
+        <button
+          data-filter="pending"
+          class="filter-btn text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-white text-[#666666] border-gray-300 hover:border-[#7a00df] hover:text-[#7a00df]"
+        >
+          Pending
+        </button>
+        <button
+          data-filter="decided"
+          class="filter-btn text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-white text-[#666666] border-gray-300 hover:border-[#7a00df] hover:text-[#7a00df]"
+        >
+          Decided
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="flex-1">
+        <input
+          type="text"
+          id="case-search"
+          placeholder="Search cases..."
+          class="w-full sm:max-w-xs px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7a00df] focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Cases list -->
+    <div id="cases-list" class="flex flex-col gap-4">
+      {sortedCases.map((c) => (
+        <CaseCard case={c} />
+      ))}
+    </div>
+
+    <p id="no-results" class="hidden text-center text-[#666666] py-12">
+      No cases match your search or filter.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('case-search') as HTMLInputElement;
+  const caseCards = document.querySelectorAll('#cases-list article');
+  const noResults = document.getElementById('no-results');
+
+  let activeFilter = 'all';
+  let searchQuery = '';
+
+  function applyFilters() {
+    let visibleCount = 0;
+    caseCards.forEach((card) => {
+      const el = card as HTMLElement;
+      const status = el.dataset.status || '';
+      const title = el.dataset.title || '';
+      const tags = el.dataset.tags || '';
+
+      const matchesFilter = activeFilter === 'all' || status === activeFilter;
+      const matchesSearch = searchQuery === '' ||
+        title.includes(searchQuery.toLowerCase()) ||
+        tags.includes(searchQuery.toLowerCase());
+
+      if (matchesFilter && matchesSearch) {
+        el.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+
+    if (noResults) {
+      noResults.classList.toggle('hidden', visibleCount > 0);
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('active', 'bg-[#7a00df]', 'text-white', 'border-[#7a00df]');
+        b.classList.add('bg-white', 'text-[#666666]', 'border-gray-300');
+      });
+      btn.classList.add('active', 'bg-[#7a00df]', 'text-white', 'border-[#7a00df]');
+      btn.classList.remove('bg-white', 'text-[#666666]', 'border-gray-300');
+      activeFilter = (btn as HTMLElement).dataset.filter || 'all';
+      applyFilters();
+    });
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchQuery = searchInput.value.trim();
+    applyFilters();
+  });
+</script>

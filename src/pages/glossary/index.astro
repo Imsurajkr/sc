@@ -1,0 +1,100 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageHeader from "@/components/ui/PageHeader.astro";
+import { getCollection } from "astro:content";
+
+const allTerms = await getCollection("glossary");
+
+// Sort alphabetically
+const sortedTerms = allTerms.sort((a, b) =>
+  a.data.term.localeCompare(b.data.term)
+);
+
+// Group by first letter
+const grouped: Record<string, typeof sortedTerms> = {};
+sortedTerms.forEach((term) => {
+  const letter = term.data.term[0].toUpperCase();
+  if (!grouped[letter]) grouped[letter] = [];
+  grouped[letter].push(term);
+});
+
+const letters = Object.keys(grouped).sort();
+const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+---
+
+<BaseLayout
+  title="Legal Glossary — Supreme Court Observer"
+  description="A plain-language glossary of legal terms used in Supreme Court proceedings."
+>
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <PageHeader
+      title="Legal Glossary"
+      description="Plain-language explanations of legal terms and concepts used in Supreme Court proceedings."
+    />
+
+    <!-- A-Z navigation -->
+    <div class="flex flex-wrap gap-1.5 mb-10 pb-6 border-b border-gray-200">
+      {allLetters.map((letter) => {
+        const hasTerms = grouped[letter] && grouped[letter].length > 0;
+        return hasTerms ? (
+          <a
+            href={`#letter-${letter}`}
+            class="w-8 h-8 flex items-center justify-center text-sm font-medium rounded-md bg-[#7a00df] text-white hover:bg-[#6600c0] transition-colors"
+          >
+            {letter}
+          </a>
+        ) : (
+          <span class="w-8 h-8 flex items-center justify-center text-sm text-gray-300 rounded-md bg-gray-50">
+            {letter}
+          </span>
+        );
+      })}
+    </div>
+
+    <!-- Terms grouped by letter -->
+    <div class="space-y-12">
+      {letters.map((letter) => (
+        <section id={`letter-${letter}`}>
+          <h2 class="text-2xl font-bold text-[#7a00df] mb-6 sticky top-14 bg-white py-2 border-b border-gray-100">
+            {letter}
+          </h2>
+          <div class="space-y-8">
+            {grouped[letter].map(async (term) => {
+              const { Content } = await term.render();
+              return (
+                <article class="border-l-4 border-[#7a00df] pl-5">
+                  <h3 class="text-lg font-bold text-[#1a1a1a] mb-2">{term.data.term}</h3>
+                  <p class="text-[#333333] leading-relaxed mb-3">{term.data.definition}</p>
+                  {term.data.etymology && (
+                    <p class="text-sm text-[#666666] italic mb-2">
+                      <span class="font-medium not-italic">Etymology:</span> {term.data.etymology}
+                    </p>
+                  )}
+                  {term.data.example && (
+                    <div class="bg-gray-50 rounded-md p-3 text-sm text-[#666666] mb-3 border-l-2 border-gray-300">
+                      <span class="font-medium text-[#1a1a1a]">Example: </span>
+                      {term.data.example}
+                    </div>
+                  )}
+                  {term.data.relatedTerms.length > 0 && (
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-xs text-[#666666] font-medium">Related:</span>
+                      {term.data.relatedTerms.map((related) => (
+                        <a
+                          href={`#letter-${related[0].toUpperCase()}`}
+                          class="text-xs text-[#7a00df] bg-[#f5e6ff] px-2.5 py-0.5 rounded-full hover:bg-[#ead0ff] transition-colors"
+                        >
+                          {related}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

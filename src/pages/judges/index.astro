@@ -1,0 +1,122 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import JudgeCard from "@/components/cards/JudgeCard.astro";
+import PageHeader from "@/components/ui/PageHeader.astro";
+import { getCollection } from "astro:content";
+
+const allJudges = await getCollection("judges");
+
+// Sitting first, then retired
+const sortedJudges = allJudges.sort((a, b) => {
+  if (a.data.status === b.data.status) return 0;
+  return a.data.status === 'sitting' ? -1 : 1;
+});
+---
+
+<BaseLayout
+  title="Judges — Supreme Court Observer"
+  description="Profiles of sitting and former judges of the Supreme Court of India."
+>
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <PageHeader
+      title={`Judges (${allJudges.length})`}
+      description="Profiles of sitting and former judges of the Supreme Court of India."
+    />
+
+    <!-- Filter bar -->
+    <div class="flex flex-col sm:flex-row gap-3 mb-8">
+      <div class="flex items-center gap-2" id="status-filter">
+        <button
+          data-filter="all"
+          class="filter-btn active text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-[#7a00df] text-white border-[#7a00df]"
+        >
+          All
+        </button>
+        <button
+          data-filter="sitting"
+          class="filter-btn text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-white text-[#666666] border-gray-300 hover:border-[#7a00df] hover:text-[#7a00df]"
+        >
+          Sitting
+        </button>
+        <button
+          data-filter="retired"
+          class="filter-btn text-sm px-4 py-2 rounded-full border font-medium transition-colors bg-white text-[#666666] border-gray-300 hover:border-[#7a00df] hover:text-[#7a00df]"
+        >
+          Retired
+        </button>
+      </div>
+      <div class="flex-1">
+        <input
+          type="text"
+          id="judge-search"
+          placeholder="Search by name..."
+          class="w-full sm:max-w-xs px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#7a00df] focus:border-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Judges grid -->
+    <div id="judges-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      {sortedJudges.map((judge) => (
+        <div data-status={judge.data.status} data-name={judge.data.name.toLowerCase()}>
+          <JudgeCard judge={judge} />
+        </div>
+      ))}
+    </div>
+
+    <p id="no-results" class="hidden text-center text-[#666666] py-12">
+      No judges match your search or filter.
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const searchInput = document.getElementById('judge-search') as HTMLInputElement;
+  const judgeItems = document.querySelectorAll('#judges-grid > div');
+  const noResults = document.getElementById('no-results');
+
+  let activeFilter = 'all';
+  let searchQuery = '';
+
+  function applyFilters() {
+    let visibleCount = 0;
+    judgeItems.forEach((item) => {
+      const el = item as HTMLElement;
+      const status = el.dataset.status || '';
+      const name = el.dataset.name || '';
+
+      const matchesFilter = activeFilter === 'all' || status === activeFilter;
+      const matchesSearch = searchQuery === '' || name.includes(searchQuery.toLowerCase());
+
+      if (matchesFilter && matchesSearch) {
+        el.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+
+    if (noResults) {
+      noResults.classList.toggle('hidden', visibleCount > 0);
+    }
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('active', 'bg-[#7a00df]', 'text-white', 'border-[#7a00df]');
+        b.classList.add('bg-white', 'text-[#666666]', 'border-gray-300');
+      });
+      btn.classList.add('active', 'bg-[#7a00df]', 'text-white', 'border-[#7a00df]');
+      btn.classList.remove('bg-white', 'text-[#666666]', 'border-gray-300');
+      activeFilter = (btn as HTMLElement).dataset.filter || 'all';
+      applyFilters();
+    });
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchQuery = searchInput.value.trim();
+    applyFilters();
+  });
+</script>

@@ -1,0 +1,169 @@
+---
+import { Image } from "astro:assets";
+import Trendspotter from "@/images/work/trendspotter.png";
+import Navy from "@/images/work/navy.png";
+import Spaziobianco from "@/images/work/spaziobianco.png";
+import Phanatik from "@/images/work/phanatik.png";
+import Studiomax from "@/images/work/studiomax.png";
+import ProfolioxLight from "@/images/work/profolioxLight.png";
+import Outkast from "@/images/work/outkast.png";
+import Author from "@/images/work/author.png";
+import Carbon from "@/images/work/carbon.png";
+import Williamsburg from "@/images/work/williamsburg.png";
+import Dusk from "@/images/work/dusk.png";
+import Quartiere from "@/images/work/quartiere.png";
+import Flabbergasted from "@/images/work/flabbergasted.png";
+import Aubergine from "@/images/work/aubergine.png";
+import Hemingway from "@/images/work/hemingway.png";
+import Vanta from "@/images/work/vanta.png";
+import Semplice from "@/images/work/semplice.png";
+import Riflesso from "@/images/work/riflesso.png";
+import Carriera from "@/images/work/carriera.png";
+import Brightlight from "@/images/work/brightlight.png";
+import Hirewise from "@/images/work/hirewise.png";
+import Snowpeak from "@/images/work/snowpeak.png";
+import Enlightr from "@/images/work/enlightr.png";
+import Superstore from "@/images/work/superstore.png";
+
+const sites = [
+  { name: "Pico Paco", image: Trendspotter, tags: ["design", "uiux"] },
+  { name: "the Blimp", image: Navy, tags: ["astro", "tailwind"] },
+  { name: "Oxbow UI", image: Spaziobianco, tags: ["library", "css"] },
+  { name: "Carrington", image: Phanatik, tags: ["typography", "design"] },
+  { name: "Wakki", image: Studiomax, tags: ["development", "framework"] },
+  { name: "Mossaikos", image: ProfolioxLight, tags: ["colors", "graphics"] },
+  { name: "Batto", image: Outkast, tags: ["uiux", "type"] },
+  { name: "Kromatika", image: Author, tags: ["colors", "svg"] },
+  { name: "Radddd", image: Carbon, tags: ["design", "letters"] },
+  { name: "Faikko", image: Williamsburg, tags: ["astro", "design"] },
+  { name: "Duskline", image: Dusk, tags: ["tailwind", "css"] },
+  { name: "Quartiere", image: Quartiere, tags: ["uiux", "design"] },
+  { name: "Flabbergasted", image: Flabbergasted, tags: ["library", "NPM"] },
+  { name: "Aubergine", image: Aubergine, tags: ["colors", "wallpapers"] },
+  { name: "Hemingway", image: Hemingway, tags: ["typography", "letters"] },
+  { name: "Vanta", image: Vanta, tags: ["design", "graphics"] },
+  { name: "Semplice", image: Semplice, tags: ["framework", "css"] },
+  { name: "Riflesso", image: Riflesso, tags: ["uiux", "type"] },
+  { name: "Carriera", image: Carriera, tags: ["development", "astro"] },
+  { name: "Brightlight", image: Brightlight, tags: ["design", "tailwind"] },
+  { name: "Hirewise", image: Hirewise, tags: ["productivity", "cli"] },
+  { name: "Snowpeak", image: Snowpeak, tags: ["design", "colors"] },
+  { name: "Enlightr", image: Enlightr, tags: ["library", "framework"] },
+  { name: "Superstore", image: Superstore, tags: ["design", "uiux"] },
+];
+
+const visible = sites.slice(0, 12);
+const hidden = sites.slice(12);
+---
+
+<section class="py-12" id="websites">
+  <div class="px-6 max-w-6xl mx-auto">
+    <div
+      id="sites-grid"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
+      {
+        visible.map((site) => (
+          <a
+            href="#_"
+            class="group block bg-white rounded-2xl overflow-hidden border border-base-100 hover:border-base-300 hover:shadow-sm transition-all duration-200"
+          >
+            <div class="aspect-video overflow-hidden bg-base-50">
+              <Image
+                src={site.image}
+                alt={site.name}
+                width={600}
+                height={338}
+                class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+              />
+            </div>
+            <div class="px-4 py-3 flex items-center justify-between">
+              <span class="text-sm font-medium text-base-900">{site.name}</span>
+              <div class="flex gap-1">
+                {site.tags.slice(0, 1).map((tag) => (
+                  <span class="text-xs text-base-400 bg-base-50 px-2 py-0.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+
+      {
+        hidden.map((site) => (
+          <a
+            href="#_"
+            data-hidden-site
+            class="group hidden bg-white rounded-2xl overflow-hidden border border-base-100 hover:border-base-300 hover:shadow-sm transition-all duration-200"
+          >
+            <div class="aspect-video overflow-hidden bg-base-50">
+              <Image
+                src={site.image}
+                alt={site.name}
+                width={600}
+                height={338}
+                class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+              />
+            </div>
+            <div class="px-4 py-3 flex items-center justify-between">
+              <span class="text-sm font-medium text-base-900">{site.name}</span>
+              <div class="flex gap-1">
+                {site.tags.slice(0, 1).map((tag) => (
+                  <span class="text-xs text-base-400 bg-base-50 px-2 py-0.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))
+      }
+
+      <div
+        class="group block bg-base-50 rounded-2xl border border-dashed border-base-200 hover:border-base-400 transition-colors duration-200 cursor-pointer"
+      >
+        <div class="aspect-video flex flex-col items-center justify-center gap-2">
+          <svg
+            class="size-5 text-base-400"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span class="text-xs text-base-400">Become a sponsor</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center">
+      <button
+        id="show-more-btn"
+        class="inline-flex items-center gap-2 text-xs font-medium text-base-600 bg-white border border-base-200 px-5 py-2.5 rounded-full hover:bg-base-50 hover:border-base-300 transition-all duration-150"
+      >
+        Show more
+        <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const btn = document.getElementById("show-more-btn");
+  btn?.addEventListener("click", () => {
+    document.querySelectorAll("[data-hidden-site]").forEach((el) => {
+      el.classList.remove("hidden");
+      el.classList.add("block");
+    });
+    btn.style.display = "none";
+  });
+</script>

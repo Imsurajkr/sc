@@ -1,23 +1,150 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import Hero from "@/components/landing/Hero.astro";
-import LogoCloud from "@/components/landing/LogoCloud.astro";
-import Work from "@/components/landing/Work.astro";
-import Howitworks from "@/components/landing/Howitworks.astro";
-import Services from "@/components/landing/Services.astro";
-import Testimonials from "@/components/landing/Testimonials.astro";
-import Pricing from "@/components/landing/Pricing.astro";
-import Faq from "@/components/landing/Faq.astro";
-import Cta from "@/components/global/Cta.astro";
+import ArticleCard from "@/components/cards/ArticleCard.astro";
+import CaseCard from "@/components/cards/CaseCard.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { getCollection } from "astro:content";
+
+const allArticles = await getCollection("articles");
+const allCases = await getCollection("cases");
+
+// Sort articles by date desc
+const sortedArticles = allArticles.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const featuredArticles = sortedArticles.filter((a) => a.data.featured);
+const heroArticle = featuredArticles[0];
+const featuredGrid = featuredArticles.slice(1, 3);
+
+const pendingCases = allCases.filter((c) => c.data.status === "pending").slice(0, 3);
+
+const hearingReports = sortedArticles
+  .filter((a) => a.data.category === "Hearing Reports")
+  .slice(0, 4);
+const fallbackArticles = sortedArticles.slice(0, 4);
+const reportsList = hearingReports.length >= 2 ? hearingReports : fallbackArticles;
+
+const trendingArticles = sortedArticles.slice(0, 4);
+
+// Collect unique tags from cases
+const allTags = new Set<string>();
+allCases.forEach((c) => c.data.tags.forEach((t) => allTags.add(t)));
+const popularTags = Array.from(allTags).slice(0, 16);
+
+const heroDate = heroArticle
+  ? new Date(heroArticle.data.date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+  : "";
 ---
-<BaseLayout>
-  <Hero />
-  <LogoCloud />
-  <Work />
-  <Howitworks />
-  <Services />
-  <Testimonials />
-  <Pricing />
-  <Faq />
-  <Cta />
+
+<BaseLayout
+  title="Supreme Court Observer — Independent Legal Journalism"
+  description="Independent reporting, analysis, and data on the Supreme Court of India."
+>
+  <!-- Hero -->
+  {heroArticle && (
+    <section class="bg-gradient-to-br from-[#7a00df] to-[#3d0075] text-white">
+      <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <div class="max-w-3xl">
+          <Badge label={heroArticle.data.category} variant="purple" />
+          <h1 class="font-serif text-3xl md:text-5xl font-bold mt-4 mb-4 leading-tight">
+            <a href={`/analysis/${heroArticle.slug}/`} class="hover:underline">
+              {heroArticle.data.title}
+            </a>
+          </h1>
+          <p class="text-lg text-purple-200 mb-6 leading-relaxed max-w-2xl">
+            {heroArticle.data.excerpt}
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="text-sm">
+              <span class="font-medium text-white">{heroArticle.data.author}</span>
+              <span class="text-purple-300 ml-2">{heroDate}</span>
+            </div>
+            <a
+              href={`/analysis/${heroArticle.slug}/`}
+              class="inline-flex items-center gap-1 text-sm font-semibold bg-white text-[#7a00df] px-5 py-2 rounded-full hover:bg-purple-50 transition-colors"
+            >
+              Read More
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Featured Grid -->
+    {featuredGrid.length > 0 && (
+      <section class="py-12 border-b border-gray-200">
+        <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Featured</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {featuredGrid.map((article) => (
+            <ArticleCard article={article} variant="featured" />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Case Watch -->
+    <section class="py-12 border-b border-gray-200">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold text-[#1a1a1a]">Cases to Watch</h2>
+        <a href="/cases/" class="text-sm text-[#7a00df] hover:underline font-medium">
+          View all cases →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {pendingCases.map((c) => (
+          <CaseCard case={c} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Hearing Reports -->
+    <section class="py-12 border-b border-gray-200">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold text-[#1a1a1a]">Latest Hearing Reports</h2>
+        <a href="/analysis/" class="text-sm text-[#7a00df] hover:underline font-medium">
+          View all →
+        </a>
+      </div>
+      <div class="flex flex-col gap-4">
+        {reportsList.map((article) => (
+          <ArticleCard article={article} variant="compact" />
+        ))}
+      </div>
+    </section>
+
+    <!-- Trending -->
+    <section class="py-12 border-b border-gray-200">
+      <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Trending</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {trendingArticles.map((article) => (
+          <ArticleCard article={article} variant="compact" />
+        ))}
+      </div>
+    </section>
+
+    <!-- Popular Tags -->
+    <section class="py-12">
+      <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Browse by Tag</h2>
+      <div class="flex flex-wrap gap-2">
+        {popularTags.map((tag) => (
+          <a
+            href={`/cases/?tag=${tag}`}
+            class="text-sm text-[#7a00df] bg-[#f5e6ff] px-4 py-2 rounded-full hover:bg-[#ead0ff] transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
 </BaseLayout>

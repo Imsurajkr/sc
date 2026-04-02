@@ -1,0 +1,148 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Badge from "@/components/ui/Badge.astro";
+import CaseCard from "@/components/cards/CaseCard.astro";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const cases = await getCollection("cases");
+  return cases.map((c) => ({
+    params: { slug: c.slug },
+    props: { case: c },
+  }));
+}
+
+const { case: caseEntry } = Astro.props;
+const { title, status, petitioner, respondent, description, bench, tags, filedDate, decidedDate, nextHearing } = caseEntry.data;
+
+const { Content } = await caseEntry.render();
+
+const statusVariant = status === "decided" ? "green" : "amber";
+const statusLabel = status === "decided" ? "Decided" : "Pending";
+
+// Related cases (same tags, excluding current)
+const allCases = await getCollection("cases");
+const relatedCases = allCases
+  .filter(
+    (c) =>
+      c.slug !== caseEntry.slug &&
+      c.data.tags.some((t) => tags.includes(t))
+  )
+  .slice(0, 3);
+---
+
+<BaseLayout title={`${title} — SCO`} description={description}>
+  <div class="max-w-7xl mx-auto px-4 py-10">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-[#666666] mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-[#7a00df]">Home</a>
+      <span>/</span>
+      <a href="/cases/" class="hover:text-[#7a00df]">Cases</a>
+      <span>/</span>
+      <span class="text-[#1a1a1a] truncate max-w-xs">{title}</span>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- Main content -->
+      <div class="lg:col-span-2">
+        <div class="mb-2">
+          <Badge label={statusLabel} variant={statusVariant} />
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold text-[#1a1a1a] leading-tight mt-3 mb-2">
+          {title}
+        </h1>
+        <p class="text-base text-[#666666] mb-6">
+          <span class="font-medium text-[#1a1a1a]">{petitioner}</span>
+          {" v. "}
+          <span class="font-medium text-[#1a1a1a]">{respondent}</span>
+        </p>
+
+        <div class="bg-[#f5e6ff] border border-purple-100 rounded-lg p-4 mb-8">
+          <p class="text-sm text-[#1a1a1a] leading-relaxed">{description}</p>
+        </div>
+
+        <div class="prose prose-sm max-w-none prose-headings:text-[#1a1a1a] prose-headings:font-semibold prose-p:text-[#333333] prose-p:leading-relaxed prose-a:text-[#7a00df] prose-li:text-[#333333]">
+          <Content />
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="space-y-6">
+        <!-- Case details -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h3 class="text-sm font-semibold text-[#1a1a1a] mb-4">Case Details</h3>
+          <dl class="space-y-3 text-sm">
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Status</dt>
+              <dd class="mt-1"><Badge label={statusLabel} variant={statusVariant} /></dd>
+            </div>
+            <div>
+              <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Filed</dt>
+              <dd class="mt-1 text-[#1a1a1a]">{filedDate}</dd>
+            </div>
+            {decidedDate && (
+              <div>
+                <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Decided</dt>
+                <dd class="mt-1 text-[#1a1a1a]">{decidedDate}</dd>
+              </div>
+            )}
+            {nextHearing && (
+              <div>
+                <dt class="text-xs text-[#666666] uppercase tracking-wide font-medium">Next Hearing</dt>
+                <dd class="mt-1 text-green-700 font-medium">{nextHearing}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+
+        <!-- Bench -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h3 class="text-sm font-semibold text-[#1a1a1a] mb-3">Bench</h3>
+          <ul class="space-y-2">
+            {bench.map((judge) => (
+              <li class="text-sm text-[#1a1a1a] flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-[#7a00df] flex-shrink-0"></div>
+                {judge}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Tags -->
+        <div class="bg-white border border-gray-200 rounded-lg p-5">
+          <h3 class="text-sm font-semibold text-[#1a1a1a] mb-3">Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <a
+                href={`/cases/?tag=${tag}`}
+                class="text-xs text-[#7a00df] bg-[#f5e6ff] px-3 py-1 rounded-full hover:bg-[#ead0ff] transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Related cases -->
+        {relatedCases.length > 0 && (
+          <div class="bg-white border border-gray-200 rounded-lg p-5">
+            <h3 class="text-sm font-semibold text-[#1a1a1a] mb-3">Related Cases</h3>
+            <ul class="space-y-3">
+              {relatedCases.map((rc) => (
+                <li>
+                  <a
+                    href={`/cases/${rc.slug}/`}
+                    class="text-sm text-[#7a00df] hover:underline leading-snug block"
+                  >
+                    {rc.data.title}
+                  </a>
+                  <p class="text-xs text-[#666666] mt-0.5">{rc.data.status === 'decided' ? 'Decided' : 'Pending'}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

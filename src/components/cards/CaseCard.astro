@@ -1,0 +1,55 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Badge from '@/components/ui/Badge.astro';
+
+interface Props {
+  case: CollectionEntry<'cases'>;
+}
+
+const { case: caseEntry } = Astro.props;
+const { title, status, petitioner, respondent, description, tags, nextHearing, decidedDate, filedDate } = caseEntry.data;
+const slug = caseEntry.slug;
+
+const statusVariant = status === 'decided' ? 'green' : 'amber';
+const statusLabel = status === 'decided' ? 'Decided' : 'Pending';
+
+const dateDisplay = status === 'decided' && decidedDate
+  ? `Decided: ${decidedDate}`
+  : nextHearing
+  ? `Next Hearing: ${nextHearing}`
+  : `Filed: ${filedDate}`;
+---
+
+<article
+  class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow duration-200 flex flex-col gap-3"
+  data-status={status}
+  data-tags={tags.join(',')}
+  data-title={title.toLowerCase()}
+>
+  <div class="flex items-center justify-between">
+    <Badge label={statusLabel} variant={statusVariant} />
+    <span class="text-xs text-[#666666]">{dateDisplay}</span>
+  </div>
+
+  <div>
+    <h3 class="text-lg font-semibold text-[#1a1a1a] leading-snug hover:text-[#7a00df] transition-colors">
+      <a href={`/cases/${slug}/`}>{title}</a>
+    </h3>
+    <p class="text-sm text-[#666666] mt-1">
+      {petitioner} <span class="font-medium text-[#1a1a1a]">v.</span> {respondent}
+    </p>
+  </div>
+
+  <p class="text-sm text-[#666666] line-clamp-2">{description}</p>
+
+  <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-gray-100">
+    {tags.slice(0, 3).map((tag) => (
+      <a
+        href={`/cases/?tag=${tag}`}
+        class="text-xs text-[#7a00df] hover:underline"
+      >
+        #{tag}
+      </a>
+    ))}
+  </div>
+</article>

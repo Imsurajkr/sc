@@ -1,0 +1,63 @@
+---
+const posts = [
+  {
+    title: "Fresh font pairings for 2024",
+    date: "Jan 01, 2024",
+    category: "development",
+    excerpt:
+      "Discover the most effective font combinations making waves in modern web design this year.",
+  },
+  {
+    title: "Free font sources to bookmark",
+    date: "Jan 01, 2024",
+    category: "design",
+    excerpt:
+      "A roundup of the best places to find high-quality, free typefaces for your next project.",
+  },
+  {
+    title: "Dark palettes for bold sites",
+    date: "Jan 01, 2024",
+    category: "uiux",
+    excerpt:
+      "How to use dark color palettes effectively without losing readability or visual hierarchy.",
+  },
+];
+---
+
+<section class="py-12 border-t border-base-100" id="blog">
+  <div class="px-6 max-w-6xl mx-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-base font-semibold text-base-900">Latest articles</h2>
+      <a
+        href="#_"
+        class="text-xs text-base-500 hover:text-base-900 transition-colors"
+      >
+        View all &rarr;
+      </a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {
+        posts.map((post) => (
+          <a
+            href="#_"
+            class="group block bg-white rounded-2xl border border-base-100 hover:border-base-300 hover:shadow-sm transition-all duration-200 p-5"
+          >
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs text-base-400">{post.date}</span>
+              <span class="text-base-200">&middot;</span>
+              <span class="text-xs text-base-400 bg-base-50 px-2 py-0.5 rounded-full">
+                {post.category}
+              </span>
+            </div>
+            <h3 class="text-sm font-medium text-base-900 group-hover:text-base-600 transition-colors leading-snug">
+              {post.title}
+            </h3>
+            <p class="mt-2 text-xs text-base-500 leading-relaxed line-clamp-2">
+              {post.excerpt}
+            </p>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>
