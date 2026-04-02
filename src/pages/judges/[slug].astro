@@ -15,6 +15,7 @@ export async function getStaticPaths() {
 const { judge } = Astro.props;
 const { name, designation, status, appointedDate, retirementDate, pendingCases, judgments, bio, initials } = judge.data;
 const judgeSlug = judge.id.replace(/\.json$/, '');
+const b = import.meta.env.BASE_URL;
 
 const statusVariant = status === "sitting" ? "green" : "gray";
 const statusLabel = status === "sitting" ? "Sitting" : "Retired";
@@ -43,9 +44,9 @@ const judgeCases = allCases.filter((c) =>
   <div class="max-w-7xl mx-auto px-4 py-10">
     <!-- Breadcrumb -->
     <nav class="text-xs text-[#666666] mb-6 flex items-center gap-2">
-      <a href="/" class="hover:text-[#7a00df]">Home</a>
+      <a href={b} class="hover:text-[#7a00df]">Home</a>
       <span>/</span>
-      <a href="/judges/" class="hover:text-[#7a00df]">Judges</a>
+      <a href={`${b}judges/`} class="hover:text-[#7a00df]">Judges</a>
       <span>/</span>
       <span class="text-[#1a1a1a]">{name}</span>
     </nav>

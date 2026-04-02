@@ -16,6 +16,7 @@ const { case: caseEntry } = Astro.props;
 const { title, status, petitioner, respondent, description, bench, tags, filedDate, decidedDate, nextHearing } = caseEntry.data;
 
 const { Content } = await caseEntry.render();
+const b = import.meta.env.BASE_URL;
 
 const statusVariant = status === "decided" ? "green" : "amber";
 const statusLabel = status === "decided" ? "Decided" : "Pending";
@@ -35,9 +36,9 @@ const relatedCases = allCases
   <div class="max-w-7xl mx-auto px-4 py-10">
     <!-- Breadcrumb -->
     <nav class="text-xs text-[#666666] mb-6 flex items-center gap-2">
-      <a href="/" class="hover:text-[#7a00df]">Home</a>
+      <a href={b} class="hover:text-[#7a00df]">Home</a>
       <span>/</span>
-      <a href="/cases/" class="hover:text-[#7a00df]">Cases</a>
+      <a href={`${b}cases/`} class="hover:text-[#7a00df]">Cases</a>
       <span>/</span>
       <span class="text-[#1a1a1a] truncate max-w-xs">{title}</span>
     </nav>
@@ -114,7 +115,7 @@ const relatedCases = allCases
           <div class="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <a
-                href={`/cases/?tag=${tag}`}
+                href={`${b}cases/?tag=${tag}`}
                 class="text-xs text-[#7a00df] bg-[#f5e6ff] px-3 py-1 rounded-full hover:bg-[#ead0ff] transition-colors"
               >
                 #{tag}
@@ -131,7 +132,7 @@ const relatedCases = allCases
               {relatedCases.map((rc) => (
                 <li>
                   <a
-                    href={`/cases/${rc.slug}/`}
+                    href={`${b}cases/${rc.slug}/`}
                     class="text-sm text-[#7a00df] hover:underline leading-snug block"
                   >
                     {rc.data.title}
