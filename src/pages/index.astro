@@ -8,144 +8,303 @@ import { getCollection } from "astro:content";
 const allArticles = await getCollection("articles");
 const allCases = await getCollection("cases");
 
-// Sort articles by date desc
 const sortedArticles = allArticles.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
-const featuredArticles = sortedArticles.filter((a) => a.data.featured);
-const heroArticle = featuredArticles[0];
-const featuredGrid = featuredArticles.slice(1, 3);
+const heroSlides = sortedArticles.slice(0, 6);
+const featuredGrid = sortedArticles.slice(0, 2);
+const recentArticles = sortedArticles.slice(2, 6);
 
 const pendingCases = allCases.filter((c) => c.data.status === "pending").slice(0, 3);
+const decidedCases = allCases.filter((c) => c.data.status === "decided").slice(0, 2);
 
-const hearingReports = sortedArticles
-  .filter((a) => a.data.category === "Hearing Reports")
-  .slice(0, 4);
-const fallbackArticles = sortedArticles.slice(0, 4);
-const reportsList = hearingReports.length >= 2 ? hearingReports : fallbackArticles;
-
-const trendingArticles = sortedArticles.slice(0, 4);
-
-// Collect unique tags from cases
 const allTags = new Set<string>();
 allCases.forEach((c) => c.data.tags.forEach((t) => allTags.add(t)));
-const popularTags = Array.from(allTags).slice(0, 16);
+const popularTags = Array.from(allTags).slice(0, 18);
+
 const b = import.meta.env.BASE_URL;
 
-const heroDate = heroArticle
-  ? new Date(heroArticle.data.date).toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    })
-  : "";
 ---
 
 <BaseLayout
   title="Supreme Court Observer — Independent Legal Journalism"
   description="Independent reporting, analysis, and data on the Supreme Court of India."
 >
-  <!-- Hero -->
-  {heroArticle && (
-    <section class="bg-gradient-to-br from-[#7a00df] to-[#3d0075] text-white">
-      <div class="max-w-7xl mx-auto px-4 py-16 md:py-24">
-        <div class="max-w-3xl">
-          <Badge label={heroArticle.data.category} variant="purple" />
-          <h1 class="font-serif text-3xl md:text-5xl font-bold mt-4 mb-4 leading-tight">
-            <a href={`${b}analysis/${heroArticle.slug}/`} class="hover:underline">
-              {heroArticle.data.title}
-            </a>
-          </h1>
-          <p class="text-lg text-purple-200 mb-6 leading-relaxed max-w-2xl">
-            {heroArticle.data.excerpt}
-          </p>
-          <div class="flex items-center gap-4">
-            <div class="text-sm">
-              <span class="font-medium text-white">{heroArticle.data.author}</span>
-              <span class="text-purple-300 ml-2">{heroDate}</span>
+
+  <!-- HERO CAROUSEL -->
+  <section id="hero-carousel" class="relative overflow-hidden bg-[#0d0d0d] min-h-[580px] flex items-end select-none">
+
+    <!-- Slides -->
+    {heroSlides.map((article, i) => {
+      const date = new Date(article.data.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+      return (
+        <div
+          class="hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out"
+          data-index={i}
+          style={i === 0 ? "opacity:1;z-index:1" : "opacity:0;z-index:0"}
+        >
+          {article.data.coverImage && (
+            <img
+              src={article.data.coverImage}
+              alt={article.data.title}
+              class="absolute inset-0 w-full h-full object-cover"
+              style="opacity:0.45"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          )}
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10"></div>
+          <div class="relative z-10 max-w-7xl mx-auto px-6 pb-20 pt-24 w-full">
+            <div class="max-w-3xl">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="text-xs font-semibold bg-[#7a00df] text-white px-3 py-1 rounded-full uppercase tracking-wider">
+                  {article.data.category}
+                </span>
+                <span class="text-gray-400 text-sm">{date}</span>
+              </div>
+              <h1 class="font-serif text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+                <a href={`${b}analysis/${article.slug}/`} class="hover:text-purple-300 transition-colors">
+                  {article.data.title}
+                </a>
+              </h1>
+              <p class="text-gray-300 text-base md:text-lg leading-relaxed mb-6 max-w-2xl line-clamp-2">
+                {article.data.excerpt}
+              </p>
+              <div class="flex flex-wrap items-center gap-4">
+                <span class="text-sm text-gray-300">By <span class="text-white font-medium">{article.data.author}</span></span>
+                <a
+                  href={`${b}analysis/${article.slug}/`}
+                  class="inline-flex items-center gap-2 text-sm font-semibold bg-white text-[#7a00df] px-6 py-2.5 rounded-full hover:bg-purple-50 transition-colors"
+                >
+                  Read Article
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              </div>
             </div>
-            <a
-              href={`${b}analysis/${heroArticle.slug}/`}
-              class="inline-flex items-center gap-1 text-sm font-semibold bg-white text-[#7a00df] px-5 py-2 rounded-full hover:bg-purple-50 transition-colors"
-            >
-              Read More
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
           </div>
         </div>
-      </div>
-    </section>
-  )}
+      );
+    })}
 
-  <div class="max-w-7xl mx-auto px-4">
-    <!-- Featured Grid -->
-    {featuredGrid.length > 0 && (
-      <section class="py-12 border-b border-gray-200">
-        <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Featured</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {featuredGrid.map((article) => (
-            <ArticleCard article={article} variant="featured" />
-          ))}
-        </div>
-      </section>
-    )}
+    <!-- Prev / Next arrows -->
+    <button id="hero-prev" aria-label="Previous" class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <button id="hero-next" aria-label="Next" class="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </button>
 
-    <!-- Case Watch -->
-    <section class="py-12 border-b border-gray-200">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-bold text-[#1a1a1a]">Cases to Watch</h2>
-        <a href={`${b}cases/`} class="text-sm text-[#7a00df] hover:underline font-medium">
-          View all cases →
-        </a>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {pendingCases.map((c) => (
-          <CaseCard case={c} />
+    <!-- Dot navigation + progress bar -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3">
+      <div class="flex items-center gap-2">
+        {heroSlides.map((_, i) => (
+          <button
+            class="hero-dot w-2 h-2 rounded-full transition-all duration-300"
+            data-dot={i}
+            style={i === 0 ? "background:white;width:24px" : "background:rgba(255,255,255,0.4)"}
+            aria-label={`Slide ${i + 1}`}
+          />
         ))}
       </div>
-    </section>
+    </div>
 
-    <!-- Hearing Reports -->
-    <section class="py-12 border-b border-gray-200">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-bold text-[#1a1a1a]">Latest Hearing Reports</h2>
-        <a href={`${b}analysis/`} class="text-sm text-[#7a00df] hover:underline font-medium">
-          View all →
-        </a>
-      </div>
-      <div class="flex flex-col gap-4">
-        {reportsList.map((article) => (
-          <ArticleCard article={article} variant="compact" />
-        ))}
-      </div>
-    </section>
+    <!-- Progress bar -->
+    <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-white/10 z-20">
+      <div id="hero-progress" class="h-full bg-[#7a00df] transition-none" style="width:0%"></div>
+    </div>
+  </section>
 
-    <!-- Trending -->
-    <section class="py-12 border-b border-gray-200">
-      <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Trending</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {trendingArticles.map((article) => (
-          <ArticleCard article={article} variant="compact" />
-        ))}
-      </div>
-    </section>
+  <script define:vars={{ total: heroSlides.length }}>
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dot');
+    const progress = document.getElementById('hero-progress');
+    const DURATION = 5000;
+    let current = 0;
+    let timer = null;
+    let startTime = null;
+    let paused = false;
+    let rafId = null;
 
-    <!-- Popular Tags -->
-    <section class="py-12">
-      <h2 class="text-lg font-bold text-[#1a1a1a] mb-6">Browse by Tag</h2>
-      <div class="flex flex-wrap gap-2">
-        {popularTags.map((tag) => (
-          <a
-            href={`${b}cases/?tag=${tag}`}
-            class="text-sm text-[#7a00df] bg-[#f5e6ff] px-4 py-2 rounded-full hover:bg-[#ead0ff] transition-colors"
-          >
-            #{tag}
+    function goTo(n) {
+      slides[current].style.opacity = '0';
+      slides[current].style.zIndex = '0';
+      dots[current].style.background = 'rgba(255,255,255,0.4)';
+      dots[current].style.width = '8px';
+
+      current = (n + total) % total;
+
+      slides[current].style.opacity = '1';
+      slides[current].style.zIndex = '1';
+      dots[current].style.background = 'white';
+      dots[current].style.width = '24px';
+
+      resetProgress();
+    }
+
+    function resetProgress() {
+      startTime = performance.now();
+      if (progress) progress.style.width = '0%';
+    }
+
+    function tick(ts) {
+      if (!paused && startTime !== null) {
+        const elapsed = ts - startTime;
+        const pct = Math.min((elapsed / DURATION) * 100, 100);
+        if (progress) progress.style.width = pct + '%';
+        if (elapsed >= DURATION) goTo(current + 1);
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // Dots
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => goTo(Number(dot.dataset.dot)));
+    });
+
+    // Arrows
+    document.getElementById('hero-prev')?.addEventListener('click', () => goTo(current - 1));
+    document.getElementById('hero-next')?.addEventListener('click', () => goTo(current + 1));
+
+    // Pause on hover
+    const carousel = document.getElementById('hero-carousel');
+    carousel?.addEventListener('mouseenter', () => { paused = true; });
+    carousel?.addEventListener('mouseleave', () => {
+      paused = false;
+      startTime = performance.now() - (parseFloat(progress?.style.width || '0') / 100) * DURATION;
+    });
+
+    resetProgress();
+    rafId = requestAnimationFrame(tick);
+  </script>
+
+  <!-- MAIN CONTENT -->
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+      <!-- LEFT: Main feed -->
+      <div class="lg:col-span-2 space-y-14">
+
+        <!-- Latest Stories -->
+        <section>
+          <div class="flex items-center gap-3 mb-6">
+            <h2 class="font-serif text-2xl font-bold text-[#1a1a1a]">Latest Stories</h2>
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <a href={`${b}analysis/`} class="text-sm text-[#7a00df] hover:underline font-medium whitespace-nowrap">All articles →</a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {featuredGrid.map((article) => (
+              <ArticleCard article={article} variant="featured" />
+            ))}
+          </div>
+          <div class="mt-6 flex flex-col gap-4">
+            {recentArticles.slice(2).map((article) => (
+              <ArticleCard article={article} variant="compact" />
+            ))}
+          </div>
+        </section>
+
+        <!-- Cases to Watch -->
+        <section>
+          <div class="flex items-center gap-3 mb-6">
+            <h2 class="font-serif text-2xl font-bold text-[#1a1a1a]">Cases to Watch</h2>
+            <div class="flex-1 h-px bg-gray-200"></div>
+            <a href={`${b}cases/`} class="text-sm text-[#7a00df] hover:underline font-medium whitespace-nowrap">All cases →</a>
+          </div>
+          <div class="grid grid-cols-1 gap-4">
+            {pendingCases.map((c) => (
+              <CaseCard case={c} />
+            ))}
+          </div>
+        </section>
+
+        <!-- Recently Decided -->
+        <section>
+          <div class="flex items-center gap-3 mb-6">
+            <h2 class="font-serif text-2xl font-bold text-[#1a1a1a]">Recently Decided</h2>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+          <div class="grid grid-cols-1 gap-4">
+            {decidedCases.map((c) => (
+              <CaseCard case={c} />
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      <!-- RIGHT: Sidebar -->
+      <aside class="space-y-10">
+
+        <!-- About SCO -->
+        <div class="bg-[#7a00df] rounded-xl p-6 text-white">
+          <h3 class="font-serif text-xl font-bold mb-3">About SCO</h3>
+          <p class="text-sm text-purple-200 leading-relaxed mb-4">
+            Supreme Court Observer is India's leading platform for independent legal journalism — tracking cases, profiling judges, and analysing constitutional questions.
+          </p>
+          <a href={`${b}about/`} class="inline-block text-xs font-semibold bg-white text-[#7a00df] px-4 py-2 rounded-full hover:bg-purple-50 transition-colors">
+            Learn more →
           </a>
-        ))}
-      </div>
-    </section>
+        </div>
+
+        <!-- Browse by Tag -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <h3 class="font-serif text-lg font-bold text-[#1a1a1a]">Browse by Tag</h3>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {popularTags.map((tag) => (
+              <a
+                href={`${b}cases/?tag=${tag}`}
+                class="text-xs text-[#7a00df] bg-[#f5e6ff] hover:bg-[#ead0ff] px-3 py-1.5 rounded-full transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <h3 class="font-serif text-lg font-bold text-[#1a1a1a]">Explore</h3>
+            <div class="flex-1 h-px bg-gray-200"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Cases', count: '12', href: `${b}cases/`, icon: '⚖️' },
+              { label: 'Judges', count: '12', href: `${b}judges/`, icon: '👨‍⚖️' },
+              { label: 'Analysis', count: '6', href: `${b}analysis/`, icon: '📝' },
+              { label: 'Glossary', count: '8', href: `${b}glossary/`, icon: '📖' },
+            ].map((item) => (
+              <a href={item.href} class="group bg-white border border-gray-100 hover:border-[#7a00df]/30 hover:shadow-md rounded-xl p-4 text-center transition-all duration-200">
+                <div class="text-2xl mb-1">{item.icon}</div>
+                <div class="font-serif font-bold text-[#1a1a1a] text-lg">{item.count}</div>
+                <div class="text-xs text-[#888]">{item.label}</div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="bg-[#fafaf8] border border-gray-200 rounded-xl p-6">
+          <h3 class="font-serif text-lg font-bold text-[#1a1a1a] mb-2">Stay Informed</h3>
+          <p class="text-sm text-[#666] mb-4 leading-relaxed">Get the latest Supreme Court coverage in your inbox every week.</p>
+          <form class="flex flex-col gap-2">
+            <input
+              type="email"
+              placeholder="your@email.com"
+              class="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7a00df]/30 focus:border-[#7a00df] bg-white"
+            />
+            <button type="submit" class="w-full bg-[#7a00df] hover:bg-[#6600c0] text-white text-sm font-semibold py-2.5 rounded-lg transition-colors">
+              Subscribe
+            </button>
+          </form>
+        </div>
+
+      </aside>
+    </div>
   </div>
 </BaseLayout>
