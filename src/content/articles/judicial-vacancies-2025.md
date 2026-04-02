@@ -5,6 +5,7 @@ author: "Namrata Banerjee"
 date: "2025-01-15"
 excerpt: "A comprehensive data analysis of judicial vacancies in the Supreme Court and high courts of India, examining trends in appointments, retirements, and the persistent gap between sanctioned and working strength."
 featured: true
+coverImage: "https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "court-data"
   - "judicial-vacancies"

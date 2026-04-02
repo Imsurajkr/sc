@@ -5,6 +5,7 @@ author: "Advay Vora"
 date: "2024-08-10"
 excerpt: "The Supreme Court's decision not to order a NEET re-test was controversial, but the broader systemic changes it triggered may prove to be its lasting legacy. Six months after the verdict, we examine what has and has not changed in India's examination ecosystem."
 featured: false
+coverImage: "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "neet"
   - "education"

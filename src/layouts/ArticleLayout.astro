@@ -9,56 +9,76 @@ interface Props {
   author?: string;
   date?: string;
   tags?: string[];
+  coverImage?: string;
 }
 
-const { title, description, category, author, date, tags = [] } = Astro.props;
+const { title, description, category, author, date, tags = [], coverImage } = Astro.props;
 const b = import.meta.env.BASE_URL;
 
 const formattedDate = date
   ? new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
+      day: 'numeric', month: 'long', year: 'numeric',
     })
   : '';
 ---
 
 <BaseLayout title={title} description={description}>
-  <div class="max-w-3xl mx-auto px-4 py-10">
-    <!-- Article header -->
-    <header class="mb-8">
+  <!-- Cover image -->
+  {coverImage && (
+    <div class="w-full h-72 md:h-96 overflow-hidden bg-gray-100">
+      <img src={coverImage} alt={title} class="w-full h-full object-cover" />
+    </div>
+  )}
+
+  <div class="max-w-3xl mx-auto px-6 py-10">
+    <!-- Header -->
+    <header class="mb-10 pb-8 border-b border-gray-200">
       {category && (
-        <div class="mb-3">
+        <div class="mb-4">
           <Badge label={category} variant="purple" />
         </div>
       )}
-      <h1 class="font-serif text-3xl md:text-4xl font-bold text-[#1a1a1a] leading-tight mb-4">
+      <h1 class="font-serif text-4xl md:text-5xl font-bold text-[#1a1a1a] leading-tight mb-5">
         {title}
       </h1>
+      {description && (
+        <p class="text-xl text-[#555] leading-relaxed mb-5 font-light">{description}</p>
+      )}
       {(author || date) && (
-        <div class="flex items-center gap-3 text-sm text-[#666666]">
-          {author && <span>By <span class="font-medium text-[#1a1a1a]">{author}</span></span>}
+        <div class="flex items-center gap-3 text-sm text-[#888]">
+          {author && (
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-[#7a00df] flex items-center justify-center text-white text-xs font-bold">
+                {author.charAt(0)}
+              </div>
+              <span class="font-medium text-[#1a1a1a]">{author}</span>
+            </div>
+          )}
           {author && date && <span>·</span>}
           {date && <span>{formattedDate}</span>}
         </div>
       )}
     </header>
 
-    <!-- Gradient cover image -->
-    <div class="w-full h-48 rounded-lg bg-gradient-to-br from-[#7a00df] to-[#5200a0] mb-8"></div>
-
-    <!-- Article body -->
-    <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1a1a1a] prose-p:text-[#333333] prose-p:leading-relaxed prose-a:text-[#7a00df] prose-a:no-underline hover:prose-a:underline">
+    <!-- Body -->
+    <div class="prose prose-lg max-w-none
+      prose-headings:font-serif prose-headings:text-[#1a1a1a]
+      prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
+      prose-p:text-[#333] prose-p:leading-[1.85] prose-p:mb-6
+      prose-a:text-[#7a00df] prose-a:no-underline hover:prose-a:underline
+      prose-strong:text-[#1a1a1a]
+      prose-blockquote:border-l-4 prose-blockquote:border-[#7a00df] prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:text-[#555]
+      prose-li:text-[#333] prose-li:leading-relaxed">
       <slot />
     </div>
 
     <!-- Tags -->
     {tags.length > 0 && (
-      <div class="mt-10 pt-6 border-t border-gray-200">
-        <p class="text-xs text-[#666666] font-medium mb-2">Tags</p>
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <p class="text-xs uppercase tracking-widest text-[#999] font-semibold mb-3">Filed under</p>
         <div class="flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <a href={`${b}analysis/?tag=${tag}`} class="text-xs text-[#7a00df] bg-[#f5e6ff] px-3 py-1 rounded-full hover:bg-[#ead0ff] transition-colors">
+            <a href={`${b}analysis/?tag=${tag}`} class="text-xs text-[#7a00df] bg-[#f5e6ff] px-3 py-1.5 rounded-full hover:bg-[#ead0ff] transition-colors">
               #{tag}
             </a>
           ))}

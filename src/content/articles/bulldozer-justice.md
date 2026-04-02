@@ -5,6 +5,7 @@ author: "V. Venkatesan"
 date: "2024-11-20"
 excerpt: "The Supreme Court's comprehensive guidelines against extrajudicial demolitions represent a landmark affirmation of the right to housing and the rule of law. This analysis examines the court's reasoning and the challenges that remain in implementation."
 featured: false
+coverImage: "https://images.pexels.com/photos/3771097/pexels-photo-3771097.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "right-to-housing"
   - "due-process"

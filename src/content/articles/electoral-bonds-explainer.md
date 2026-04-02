@@ -5,6 +5,7 @@ author: "Namrata Banerjee"
 date: "2024-02-20"
 excerpt: "A data-driven examination of the Supreme Court's landmark Electoral Bonds judgment — what the scheme was, who bought bonds, who received them, and why the court found it unconstitutional."
 featured: false
+coverImage: "https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "electoral-bonds"
   - "elections"

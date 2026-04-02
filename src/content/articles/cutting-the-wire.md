@@ -5,6 +5,7 @@ author: "V. Venkatesan"
 date: "2024-03-15"
 excerpt: "A recent Supreme Court order has significant implications for how internet service providers are treated under Indian law. This analysis examines the court's reasoning and what it means for digital rights and corporate liability."
 featured: true
+coverImage: "https://images.pexels.com/photos/3755755/pexels-photo-3755755.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "internet"
   - "isp-liability"

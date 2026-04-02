@@ -5,6 +5,7 @@ author: "Advay Vora"
 date: "2024-04-08"
 excerpt: "A seven-judge Constitution Bench is examining whether Dalits who convert to Christianity or Islam can continue to claim Scheduled Caste status. This analysis traces the legal history of caste and religion in India and what the court's ruling might mean for millions of people."
 featured: true
+coverImage: "https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg?auto=compress&cs=tinysrgb&w=900"
 tags:
   - "scheduled-castes"
   - "religion"
