@@ -10,6 +10,6 @@ export default defineConfig({
   // Replace the URL below with the domain where you’ll host the site.
   // Keeping the trailing slash is important for correct canonical URLs.
   site: "https://imsurajkr.github.io",
-  base: "/sc",
+  base: "/sc/",
   integrations: [ sitemap()]
 });
